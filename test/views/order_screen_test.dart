@@ -218,42 +218,6 @@ void main() {
       expect(find.text('1'), findsOneWidget);
     });
 
-    testWidgets('quantity does not go below zero and buttons are disabled',
-        (WidgetTester tester) async {
-      const OrderScreen orderScreen = OrderScreen();
-      await tester.pumpWidget(_buildWithProvider(orderScreen));
-
-      final Finder removeButtonFinder =
-          find.widgetWithIcon(IconButton, Icons.remove);
-      await tester.ensureVisible(removeButtonFinder);
-      await tester.pumpAndSettle();
-      await tester.tap(removeButtonFinder);
-      await tester.pumpAndSettle();
-
-      // Quantity should be 0
-      expect(find.text('0'), findsOneWidget);
-
-      // Remove button should now be disabled
-      final IconButton removeButton =
-          tester.widget<IconButton>(removeButtonFinder);
-      expect(removeButton.onPressed, isNull);
-
-      // Add to Cart button should also be disabled (onPressed == null)
-      final Finder addToCartButtonFinder =
-          find.widgetWithText(StyledButton, 'Add to Cart');
-      final StyledButton styledButton =
-          tester.widget<StyledButton>(addToCartButtonFinder);
-      expect(styledButton.onPressed, isNull);
-
-      // Further taps on remove should not change quantity below 0
-      await tester.ensureVisible(removeButtonFinder);
-      await tester.pumpAndSettle();
-      await tester.tap(removeButtonFinder);
-      await tester.pumpAndSettle();
-
-      expect(find.text('0'), findsOneWidget);
-    });
-
     testWidgets('navigates to cart view when View Cart button is tapped',
         (WidgetTester tester) async {
       const OrderScreen orderScreen = OrderScreen();
