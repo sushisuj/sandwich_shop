@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sandwich_shop/models/cart.dart';
 import 'package:sandwich_shop/views/order_screen.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
+import 'package:sandwich_shop/views/common_widgets.dart';
 
 void dummyFunction() {}
 
@@ -229,16 +230,22 @@ void main() {
       await tester.tap(removeButtonFinder);
       await tester.pumpAndSettle();
 
+      // Quantity should be 0
       expect(find.text('0'), findsOneWidget);
-      IconButton removeButton = tester.widget<IconButton>(removeButtonFinder);
+
+      // Remove button should now be disabled
+      final IconButton removeButton =
+          tester.widget<IconButton>(removeButtonFinder);
       expect(removeButton.onPressed, isNull);
 
+      // Add to Cart button should also be disabled (onPressed == null)
       final Finder addToCartButtonFinder =
           find.widgetWithText(StyledButton, 'Add to Cart');
       final StyledButton styledButton =
           tester.widget<StyledButton>(addToCartButtonFinder);
       expect(styledButton.onPressed, isNull);
 
+      // Further taps on remove should not change quantity below 0
       await tester.ensureVisible(removeButtonFinder);
       await tester.pumpAndSettle();
       await tester.tap(removeButtonFinder);
