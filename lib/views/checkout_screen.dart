@@ -23,6 +23,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     await Future.delayed(const Duration(seconds: 2));
 
+    if (!mounted) return;
+
     final DateTime currentTime = DateTime.now();
     final int timestamp = currentTime.millisecondsSinceEpoch;
     final String orderId = 'ORD$timestamp';
@@ -35,9 +37,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       'estimatedTime': '15-20 minutes',
     };
 
-    if (mounted) {
-      Navigator.pop(context, orderConfirmation);
-    }
+    Navigator.pop(context, orderConfirmation);
   }
 
   double _calculateItemPrice(Sandwich sandwich, int quantity) {
