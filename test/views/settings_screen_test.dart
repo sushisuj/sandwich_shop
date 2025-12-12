@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sandwich_shop/views/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sandwich_shop/views/settings_screen.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
 
 void main() {
-  // Initialize the SharedPreferences with mock values
-  SharedPreferences.setMockInitialValues(<String, Object>{
-    'fontSize': 16.0,
-  });
-
-  // Helper to pump the screen inside a MaterialApp
+  // Helper to pump the real SettingsScreen inside a MaterialApp
   Future<void> _pumpSettingsScreen(WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
@@ -19,12 +14,31 @@ void main() {
     );
   }
 
+  setUp(() {
+    // Ensure prefs are mocked for each test run
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'fontSize': 16.0,
+    });
+  });
+
   testWidgets('shows loading indicator while settings are loading',
       (WidgetTester tester) async {
     await _pumpSettingsScreen(tester);
 
     // First frame: _isLoading is true, so we should see a CircularProgressIndicator
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('shows font size slider after loading',
+      (WidgetTester tester) async {
+    await _pumpSettingsScreen(tester);
+
+    // Let _loadSettings() run and flip _isLoading to false
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Now the main settings UI should be visible, including the Slider
+    expect(find.text('Font Size'), findsOneWidget);
+    expect(find.byType(Slider), findsOneWidget);
   });
 }
 
